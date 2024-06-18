@@ -9,10 +9,36 @@
         #map {
             height: 600px;
         }
+        .touch-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .touch-button {
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div class="touch-buttons">
+        <div class="touch-button" id="left">⬅️</div>
+        <div class="touch-button" id="up">⬆️</div>
+        <div class="touch-button" id="right">➡️</div>
+        <div class="touch-button" id="down">⬇️</div>
+    </div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([37.0902, -95.7129], 4);
@@ -63,7 +89,7 @@
         L.polyline(coordinates, {color: 'red'}).addTo(map);
 
         var vanIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/ameixueiro/van-simulation/main/van.png',  // Use the local server URL
+            iconUrl: 'https://raw.githubusercontent.com/ameixueiro/van-simulation/main/van.png',  // Use the correct URL for the image
             iconSize: [55, 28],  // Adjust size as needed
             iconAnchor: [32, 20]  // Adjust anchor point as needed
         });
@@ -71,14 +97,40 @@
         var marker = L.marker(coordinates[0], {icon: vanIcon}).addTo(map);
         var currentIdx = 0;
 
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+        function moveVan(direction) {
+            if (direction === 'right' || direction === 'up') {
                 currentIdx = (currentIdx + 1) % coordinates.length;
-            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+            } else if (direction === 'left' || direction === 'down') {
                 currentIdx = (currentIdx - 1 + coordinates.length) % coordinates.length;
             }
             marker.setLatLng(coordinates[currentIdx]);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                moveVan('right');
+            } else if (event.key === 'ArrowLeft') {
+                moveVan('left');
+            } else if (event.key === 'ArrowUp') {
+                moveVan('up');
+            } else if (event.key === 'ArrowDown') {
+                moveVan('down');
+            }
+        });
+
+        document.getElementById('right').addEventListener('click', function() {
+            moveVan('right');
+        });
+        document.getElementById('left').addEventListener('click', function() {
+            moveVan('left');
+        });
+        document.getElementById('up').addEventListener('click', function() {
+            moveVan('up');
+        });
+        document.getElementById('down').addEventListener('click', function() {
+            moveVan('down');
         });
     </script>
 </body>
 </html>
+
