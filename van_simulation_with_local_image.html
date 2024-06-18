@@ -39,9 +39,7 @@
     <div id="map"></div>
     <div class="touch-buttons">
         <div class="touch-button" id="left">⬅️</div>
-        <div class="touch-button" id="up">⬆️</div>
         <div class="touch-button" id="right">➡️</div>
-        <div class="touch-button" id="down">⬇️</div>
     </div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -102,9 +100,9 @@
         var currentIdx = 0;
 
         function moveVan(direction) {
-            if (direction === 'right' || direction === 'up') {
+            if (direction === 'right') {
                 currentIdx = (currentIdx + 1) % coordinates.length;
-            } else if (direction === 'left' || direction === 'down') {
+            } else if (direction === 'left') {
                 currentIdx = (currentIdx - 1 + coordinates.length) % coordinates.length;
             }
             marker.setLatLng(coordinates[currentIdx]);
@@ -115,10 +113,6 @@
                 moveVan('right');
             } else if (event.key === 'ArrowLeft') {
                 moveVan('left');
-            } else if (event.key === 'ArrowUp') {
-                moveVan('up');
-            } else if (event.key === 'ArrowDown') {
-                moveVan('down');
             }
         });
 
@@ -127,12 +121,6 @@
         });
         document.getElementById('left').addEventListener('click', function() {
             moveVan('left');
-        });
-        document.getElementById('up').addEventListener('click', function() {
-            moveVan('up');
-        });
-        document.getElementById('down').addEventListener('click', function() {
-            moveVan('down');
         });
     </script>
 </body>
