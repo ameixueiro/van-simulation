@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
-            height: 100vh;
-            width: 100%;
+            height: 600px;
         }
         .touch-buttons {
             position: fixed;
@@ -16,44 +15,33 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 15px;
+            gap: 10px;
             background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-            padding: 15px;
-            border-radius: 15px;
+            padding: 10px;
+            border-radius: 10px;
             z-index: 1000; /* Ensure the buttons are on top of the map */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add shadow for better visibility */
         }
         .touch-button {
-            width: 60px;
-            height: 60px;
-            background-color: #007BFF;
-            border: none;
+            width: 60px;  /* Increased size */
+            height: 60px; /* Increased size */
+            background-color: #fff;
+            border: 3px solid #000; /* Thicker border */
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            font-size: 28px;
+            font-size: 30px; /* Larger font size */
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .touch-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
-        }
-        .touch-button:active {
-            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
     <div class="touch-buttons">
-        <button class="touch-button" id="left">⬅️</button>
-        <button class="touch-button" id="up">⬆️</button>
-        <button class="touch-button" id="right">➡️</button>
-        <button class="touch-button" id="down">⬇️</button>
+        <div class="touch-button" id="left">⬅️</div>
+        <div class="touch-button" id="up">⬆️</div>
+        <div class="touch-button" id="right">➡️</div>
+        <div class="touch-button" id="down">⬇️</div>
     </div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -105,7 +93,7 @@
         L.polyline(coordinates, {color: 'red'}).addTo(map);
 
         var vanIcon = L.icon({
-            iconUrl: 'https://raw.githubusercontent.com/ameixueiro/van-simulation/main/van.png',  // Use the correct URL
+            iconUrl: 'https://raw.githubusercontent.com/ameixueiro/van-simulation/main/van.png',  // Use the correct URL for the image
             iconSize: [55, 28],  // Adjust size as needed
             iconAnchor: [32, 20]  // Adjust anchor point as needed
         });
@@ -113,28 +101,38 @@
         var marker = L.marker(coordinates[0], {icon: vanIcon}).addTo(map);
         var currentIdx = 0;
 
-        function moveMarker(idx) {
-            marker.setLatLng(coordinates[idx]);
+        function moveVan(direction) {
+            if (direction === 'right' || direction === 'up') {
+                currentIdx = (currentIdx + 1) % coordinates.length;
+            } else if (direction === 'left' || direction === 'down') {
+                currentIdx = (currentIdx - 1 + coordinates.length) % coordinates.length;
+            }
+            marker.setLatLng(coordinates[currentIdx]);
         }
 
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                moveVan('right');
+            } else if (event.key === 'ArrowLeft') {
+                moveVan('left');
+            } else if (event.key === 'ArrowUp') {
+                moveVan('up');
+            } else if (event.key === 'ArrowDown') {
+                moveVan('down');
+            }
+        });
+
         document.getElementById('right').addEventListener('click', function() {
-            currentIdx = (currentIdx + 1) % coordinates.length;
-            moveMarker(currentIdx);
+            moveVan('right');
         });
-
         document.getElementById('left').addEventListener('click', function() {
-            currentIdx = (currentIdx - 1 + coordinates.length) % coordinates.length;
-            moveMarker(currentIdx);
+            moveVan('left');
         });
-
         document.getElementById('up').addEventListener('click', function() {
-            currentIdx = (currentIdx - 1 + coordinates.length) % coordinates.length;
-            moveMarker(currentIdx);
+            moveVan('up');
         });
-
         document.getElementById('down').addEventListener('click', function() {
-            currentIdx = (currentIdx + 1) % coordinates.length;
-            moveMarker(currentIdx);
+            moveVan('down');
         });
     </script>
 </body>
